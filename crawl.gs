@@ -13,3 +13,11 @@ function stockRealtimeCrawl(symbol)
    return resp.getContentText();
 
 }
+
+//lay thong tin tổng quan mã chứng khoán
+function stockTickerOverview(symbol)
+{
+  var resp = UrlFetchApp.fetch("https://apipubaws.tcbs.com.vn/tcanalysis/v1/ticker/"+symbol+"/overview");
+   return resp.getContentText();
+
+}
