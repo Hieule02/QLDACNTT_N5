@@ -4,7 +4,7 @@ function stockListCrawl()
    var resp = UrlFetchApp.fetch("https://fiin-core.ssi.com.vn/Master/GetListOrganization?language=vi");
    return resp.getContentText();
 }
-console.log(stockListCrawl());
+
 
 //lay du lieu theo ma chung khoan
 function stockRealtimeCrawl(symbol)
