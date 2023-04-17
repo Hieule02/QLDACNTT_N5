@@ -1,6 +1,8 @@
 //lay du lieu danh sach ma chung khoan
 function stockListCrawl() {
-    var resp = UrlFetchApp.fetch("https://fiin-core.ssi.com.vn/Master/GetListOrganization?language=vi");
+    //var resp = UrlFetchApp.fetch("https://fiin-core.ssi.com.vn/Master/GetListOrganization?language=en");
+    //var resp = UrlFetchApp.fetch("https://iboard.ssi.com.vn/dchart/api/1.1/defaultAllStocks");
+    var resp = UrlFetchApp.fetch("https://raw.githubusercontent.com/Hieule02/QLDACNTT_N5/main/data/stockList.json");
     return JSON.parse(resp);
 }
 
@@ -30,11 +32,11 @@ function stockListByEx(exchange) {
 //lay du lieu theo ma chung khoan
 function stockRealtimeCrawl(symbol) {
     var resp = UrlFetchApp.fetch("https://apipubaws.tcbs.com.vn/stock-insight/v1/stock/second-tc-price?tickers=" + symbol);
-    return resp = JSON.parse(resp);
+    return JSON.parse(resp);
 }
 
 //lay thong tin cong ty
 function stockTickerOverview(symbol) {
     var resp = UrlFetchApp.fetch("https://apipubaws.tcbs.com.vn/tcanalysis/v1/ticker/" + symbol + "/overview");
-    return resp = JSON.parse(resp);
+    return JSON.parse(resp);
 }
