@@ -45,12 +45,8 @@ function realtimePriceUpdate() {
     var Priceboard = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Priceboard");
 
     for (;;) {
-        Utilities.sleep(1 * 1000);
-        Priceboard.getRange('F5').setNote("dang cap nhat gia");
-        SpreadsheetApp.flush();
         var tickerList = new Array();
         for (var i = 0; i < 50; i++) tickerList.push(Priceboard.getRange('D' + (i + 6)).getValue());
-
         var realtimePrice = stockRealtimeCrawl(tickerList);
         var price, color, thamchieu, p;
         for (var i = 0; i < 50; i++) {
@@ -68,16 +64,12 @@ function realtimePriceUpdate() {
             else if (price > x) Priceboard.getRange('F' + (i + 6) + ':I' + (i + 6)).setBackgroundRGB(255, 0, 0);
             else if (true) Priceboard.getRange('F' + (i + 6) + ':I' + (i + 6)).setBackgroundRGB(50, 205, 50);
             SpreadsheetApp.flush();
-            Priceboard.getRange('F' + (i + 6) + ':I' + (i + 6)).setBackgroundRGB(243,243,243);
-            SpreadsheetApp.flush();
 
-            
             Priceboard.getRange('F' + (i + 6)).setValue(price).setFontColor(color);
             Priceboard.getRange('G' + (i + 6)).setValue(price - thamchieu).setFontColor(color);
             Priceboard.getRange('H' + (i + 6)).setValue(p.toFixed(2) + '%').setFontColor(color);
             Priceboard.getRange('I' + (i + 6)).setValue(thamchieu).setFontColor('#e78b03');
+            Priceboard.getRange('F' + (i + 6) + ':I' + (i + 6)).setBackgroundRGB(243, 243, 243);
         }
-        Priceboard.getRange('F5').setNote("done");
-        SpreadsheetApp.flush();
     }
 }
