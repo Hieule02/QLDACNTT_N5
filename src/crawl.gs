@@ -28,10 +28,16 @@ function stockListByEx(exchange) {
     return r;
 }
 
-
 //lay du lieu theo ma chung khoan
 function stockRealtimeCrawl(symbol) {
     var resp = UrlFetchApp.fetch("https://apipubaws.tcbs.com.vn/stock-insight/v1/stock/second-tc-price?tickers=" + symbol);
+    return JSON.parse(resp);
+}
+
+//lay lich su gia
+function stockHistoryCrawl(ticker, timeStart, timeEnd) {
+    var resp = UrlFetchApp.fetch("https://apipubaws.tcbs.com.vn/stock-insight/v1/stock/bars-long-term?ticker=" + ticker +
+        "&type=stock&resolution=D&from=" + timeStart + "&to=" + timeEnd);
     return JSON.parse(resp);
 }
 
