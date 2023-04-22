@@ -38,23 +38,28 @@ function searchTicker() {
         }
     }
     if (Priceboard.getRange('D' + (6)).getValue() == '') status.setValue('Khong tim thay!').setFontColor("red");
+    else status.setValue('Done').setFontColor("green");
 }
 
+function getTickerList(sheet) {
+    var Priceboard = sheet;
+    let tickerList = [];
+    for (var i = 0; i < 50; i++) tickerList[i] = Priceboard.getRange('D' + (i + 6)).getValue();
+    return tickerList;
+}
 
-function realtimePriceUpdate() {
-    var Priceboard = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Priceboard");
-    var tickerList = new Array();
-    var count = 0;
-    for (var i = 0; i < 50; i++) tickerList.push(Priceboard.getRange('D' + (i + 6)).getValue());
-    var realtimePrice = stockRealtimeCrawl(tickerList);
-  
+function realtimePriceUpdate(sheet) {
+    var Priceboard = sheet;
+    let tickerList = getTickerList(sheet);
+    if (tickerList[0] == '') return;
+    let realtimePrice = stockRealtimeCrawl(tickerList);
+    Logger.log(tickerList);
     var price, color, thamchieu, p;
-    Logger.log(count++ + " - " + realtimePrice.data[0].cp);
-    for (var i = 0; i < 50; i++) {
-        tickerList.pop()
-        if (Priceboard.getRange('D' + (i + 6)).isBlank()) break;
-        if (realtimePrice.data[i].cp == '' || realtimePrice.data[i].cp == null) continue;
 
+    for (var i = 0; i < 50; i++) {
+        if (realtimePrice.data[i].cp == '' || realtimePrice.data[i].cp == null) continue;
+        var tickerRange = Priceboard.getRange('D' + (i + 6)).getValue();
+        if (tickerRange != tickerList[i]) break;
         price = parseInt(realtimePrice.data[i].cp);
         thamchieu = parseInt(realtimePrice.data[i].hmp);
         p = (price - thamchieu) * (100 / thamchieu);
@@ -64,6 +69,7 @@ function realtimePriceUpdate() {
         var x = 0;
         if (Priceboard.getRange('F' + (i + 6)).getValue() != "")
             x = parseInt(Priceboard.getRange('F' + (i + 6)).getValue());
+
         if (price == x) return;
         else if (price > x) Priceboard.getRange('F' + (i + 6) + ':I' + (i + 6)).setBackgroundRGB(255, 0, 0);
         else Priceboard.getRange('F' + (i + 6) + ':I' + (i + 6)).setBackgroundRGB(50, 205, 50);
@@ -73,8 +79,11 @@ function realtimePriceUpdate() {
         Priceboard.getRange('G' + (i + 6)).setValue(price - thamchieu).setFontColor(color);
         Priceboard.getRange('H' + (i + 6)).setValue(p.toFixed(2) + '%').setFontColor(color);
         Priceboard.getRange('I' + (i + 6)).setValue(thamchieu).setFontColor('#e78b03');
-        Priceboard.getRange('F' + (i + 6) + ':I' + (i + 6)).setBackgroundRGB(243, 243, 243);
+        Priceboard.getRange('F' + (i + 6) + ':I' + (i + 6)).setBackgroundRGB(255, 255, 255);
     }
+    var s = 1 * 1000;
+    Logger.log('sleeping ' + s);
+    Utilities.sleep(s);
 }
 
 function updateHistoricalData() {
@@ -89,6 +98,7 @@ function updateHistoricalData() {
     var startDate = endDate.getTime() - dateOffset * 20;
     var priceList = stockHistoryCrawl(tickerName, parseInt(startDate / 1000), parseInt(endDate / 1000));
     var data = priceList.data;
+    var color;
 
     for (var j = data.length - 1; j > 0; j--) {
         var i = data.length - 1 - j;
@@ -99,7 +109,9 @@ function updateHistoricalData() {
         PriceChart.getRange('G' + (25 + i)).setValue(data[j].low);
         PriceChart.getRange('H' + (25 + i)).setValue(data[j].close);
         PriceChart.getRange('I' + (25 + i)).setValue(data[j].volume);
-        PriceChart.getRange('J' + (25 + i)).setValue(change.toFixed(2) + "%");
+        if (change < 0) color = "#ff0017";
+        else color = "#078c54";
+        PriceChart.getRange('J' + (25 + i)).setValue(change.toFixed(2) + "%").setFontColor(color);
     }
 }
 
